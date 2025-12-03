@@ -20,9 +20,6 @@ class IKO_app(BaseMicroscopeApp):
         self.add_hardware(IKO_HW(self))
            
 
-        self.ui.show()
-        self.ui.activateWindow()
-
 
 if __name__ == '__main__':
     import sys
