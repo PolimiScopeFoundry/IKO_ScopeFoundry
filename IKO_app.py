@@ -17,7 +17,7 @@ class IKO_app(BaseMicroscopeApp):
         #Add hardware components
         print("Adding Hardware Components")
         from IKO_Hardware import IKO_HW
-        self.add_hardware(IKO_HW(self))
+        self.add_hardware(IKO_HW(self, ip = "10.0.0.100", port = 701))
            
 
 
