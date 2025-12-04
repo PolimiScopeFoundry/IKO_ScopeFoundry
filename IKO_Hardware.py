@@ -36,8 +36,9 @@ class IKO_HW(HardwareComponent):
         self.target_position = self.settings.New(name='target position', dtype=float, unit='mm')
         self.position = self.settings.New(name='position', ro = True, dtype=float, unit='mm', reread_from_hardware_after_write = True)
         
-        self.velocity = self.settings.New(name='velocity', dtype=float, unit='mm/s', initial = 0.5, reread_from_hardware_after_write = True)
-        self.acceleration = self.settings.New(name='acceleration', dtype=float, unit='mm/s', initial = 0.5, reread_from_hardware_after_write = True)
+        self.velocity = self.settings.New(name='velocity', dtype=float, unit='mm/s', reread_from_hardware_after_write = True)
+        self.acceleration = self.settings.New(name='acceleration', dtype=float, unit='mm/s', reread_from_hardware_after_write = True)
+        self.deceleration = self.settings.New(name='deceleration', dtype=float, unit='mm/s', reread_from_hardware_after_write = True)
 
         self.home = self.settings.New(name='home', dtype=float, unit='mm')
         
@@ -62,6 +63,8 @@ class IKO_HW(HardwareComponent):
         self.velocity.hardware_set_func = self.motor.set_velocity     
         self.acceleration.hardware_read_func = self.motor.get_acceleration
         self.acceleration.hardware_set_func = self.motor.set_acceleration 
+        self.deceleration.hardware_read_func = self.motor.get_deceleration
+        self.deceleration.hardware_set_func = self.motor.set_deceleration
         
         # self.home.hardware_read_func = self.motor.get_home
         

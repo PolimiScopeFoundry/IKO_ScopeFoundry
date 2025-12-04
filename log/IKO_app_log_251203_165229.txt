@@ -1,0 +1,2 @@
+2025-12-03T16:52:47|INFO|IKO_app|on_close
+2025-12-03T16:52:47|INFO|IKO_app|disconnecting IKO_HW

@@ -1,0 +1,12 @@
+2025-12-03T16:15:46|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
+    raise err
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
+    self.connect()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_Hardware.py", line 36, in connect
+    self.motor = IKO_Device()
+            ^^^^^^^^^^^^
+TypeError: IKO_Device.__init__() missing 2 required positional arguments: 'ip' and 'port'
+
+2025-12-03T16:15:59|INFO|IKO_app|on_close
+2025-12-03T16:15:59|INFO|IKO_app|disconnecting IKO_HW

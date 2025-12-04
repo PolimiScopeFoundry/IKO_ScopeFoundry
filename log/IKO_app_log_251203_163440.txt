@@ -1,0 +1,11 @@
+2025-12-03T16:34:40|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_app.py", line 27, in <module>
+    app = IKO_app(sys.argv)
+          ^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 88, in __init__
+    self.setup()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_app.py", line 20, in setup
+    self.add_hardware(IKO_HW(self, ip = "10.0.0.100", port = 701))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: HardwareComponent.__init__() got an unexpected keyword argument 'ip'
+

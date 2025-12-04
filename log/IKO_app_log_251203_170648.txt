@@ -1,0 +1,18 @@
+2025-12-03T17:06:52|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
+    raise err
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
+    self.connect()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_Hardware.py", line 52, in connect
+    self.motor = IKO_Device(ip = self._ip,  port = self._port)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IKO_Device.__init__() missing 1 required positional argument: 'axis'
+
+2025-12-03T17:07:13|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\helper_funcs.py", line 188, in eventFilter
+    def eventFilter(self, obj, event):
+    
+KeyboardInterrupt
+
+2025-12-03T17:07:14|INFO|IKO_app|on_close
+2025-12-03T17:07:14|INFO|IKO_app|disconnecting IKO_HW

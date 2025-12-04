@@ -1,0 +1,16 @@
+2025-12-03T16:05:09|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_app.py", line 30, in <module>
+    app = IKO_app(sys.argv)
+          ^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 88, in __init__
+    self.setup()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_app.py", line 20, in setup
+    self.add_hardware(IKO_HW(self))
+                      ^^^^^^^^^^^^
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 79, in __init__
+    self.setup()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_Hardware.py", line 28, in setup
+    self.add_operation('GoHome', self.go_home)
+                                 ^^^^^^^^^^^^
+AttributeError: 'IKO_HW' object has no attribute 'go_home'. Did you mean: 'set_home'?
+

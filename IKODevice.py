@@ -101,11 +101,13 @@ class IKO_Device(object):
             print('Debugging: Error code:', error_code)
             print('Debugging: Error string:', error_str)
 
+
         def get_velocity(self):
             # if hasattr(self, 'hc_sim'):
             #     return sp.GetVelocity(self.hc_sim, 0, sp.SYNCHRONOUS, True)
             # else:
                 return sp.GetVelocity(self.hc, self.axis, sp.SYNCHRONOUS, True)
+        
 
         def set_velocity(self, desired_velocity):
             # if hasattr(self, 'hc_sim'):
@@ -124,6 +126,7 @@ class IKO_Device(object):
             # else:
                 return sp.GetAcceleration(self.hc, self.axis, sp.SYNCHRONOUS, True)
         
+        
         def set_acceleration(self, desired_acceleration):
             # if hasattr(self, 'hc_sim'):
             #     sp.SetAcceleration(self.hc_sim, self.axis, desired_acceleration, sp.SYNCHRONOUS, True)  
@@ -137,6 +140,7 @@ class IKO_Device(object):
             #     return sp.GetDeceleration(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)
             # else:
                 return sp.GetDeceleration(self.hc, self.axis, sp.SYNCHRONOUS, True)
+        
         
         def set_deceleration(self, desired_acceleration):
             # if hasattr(self, 'hc_sim'):
@@ -169,18 +173,24 @@ class IKO_Device(object):
             #     return sp.GetFPosition(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)
             # else:
                 return sp.GetFPosition(self.hc, self.axis, sp.SYNCHRONOUS, True)
+        
             
-        def set_fposition(self, desired_pos): #motor does not move FPOS
-            # if hasattr(self, 'hc_sim'):
-            #     sp.SetFPosition(self.hc_sim, self.axis, desired_pos, sp.SYNCHRONOUS, True) 
-            # else:
-                sp.SetFPosition(self.hc, self.axis, desired_pos, sp.SYNCHRONOUS, True)
+        # def set_fposition(self, desired_pos): #motor does not move FPOS
+        #     # if hasattr(self, 'hc_sim'):
+        #     #     sp.SetFPosition(self.hc_sim, self.axis, desired_pos, sp.SYNCHRONOUS, True) 
+        #     # else:
+        #         sp.SetFPosition(self.hc, self.axis, desired_pos, sp.SYNCHRONOUS, True)
+        #IY MAY BE USELESS because the absolute motion is controlled by sp.ToPoint function
 
-        def get_fvelocity(self):#feedback velocity FPOS
-            # if hasattr(self, 'hc_sim'):
-            #     return sp.GetFVelocity(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)    
-            # else:
-                return sp.GetFVelocity(self.hc, self.axis, sp.SYNCHRONOUS, True)
+
+
+        # def get_fvelocity(self):#feedback velocity FPOS
+        #     # if hasattr(self, 'hc_sim'):
+        #     #     return sp.GetFVelocity(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)    
+        #     # else:
+        #         return sp.GetFVelocity(self.hc, self.axis, sp.SYNCHRONOUS, True)
+        # # this function retrieves an instant value of the motor feedback velocity. Unlike , the function retrieves 
+        # # the actually measured velocity and not the required value. IT MAY BE USELESS!!!
             
             
 
@@ -197,14 +207,17 @@ class IKO_Device(object):
             # if hasattr(self, 'hc_sim'): 
             #     sp.SetRPosition(self.hc_sim, 0, desired_pos, sp.SYNCHRONOUS, True)
             # else:       
-                sp.SetRPosition(self.hc, self.axis, 0, sp.SYNCHRONOUS, True)
+                sp.SetRPosition(self.hc, self.axis, self.axis, sp.SYNCHRONOUS, True)
         
-        def get_rvelocity(self):#reference velocity
-            # if hasattr(self, 'hc_sim'):
-            #     return sp.GetRVelocity(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)
-            # else:
-                return sp.GetRVelocity(self.hc, self.axis, sp.SYNCHRONOUS, True)
+
+        # def get_rvelocity(self):#reference velocity
+        #     # if hasattr(self, 'hc_sim'):
+        #     #     return sp.GetRVelocity(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)
+        #     # else:
+        #         return sp.GetRVelocity(self.hc, self.axis, sp.SYNCHRONOUS, True)
+        # # this function  retrieves an instant value of the motor reference velocity. IT MEY BE USELESS!!!
             
+
 
         def move_absolute(self, desired_pos): #move to a given position
             # if hasattr(self, 'hc_sim'):
@@ -218,6 +231,7 @@ class IKO_Device(object):
         #NOTE: ExtToPoint is available for motion to specified point using the specified velocity or end
         # velocity. MAY IT BE USEFUL?
 
+
         def move_relative(self, desired_step):
             # if hasattr(self, 'hc_sim'):
             #     sp.ToPoint(self.hc_sim, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, desired_step, sp.SYNCHRONOUS, True)
@@ -226,7 +240,7 @@ class IKO_Device(object):
  
 
 
-        def move_sequence(self, step, step_num, start_pos):
+        def move_sequence(self, step, step_num, start_pos, dwell_time):
             # if hasattr(self, 'hc_sim'):
             #     #the created motion starts only after the first point is specified. 
             #     sp.MultiPoint(self.hc_sim, 0, sp.Axis.ACSC_AXIS_0, 1,failure_check=True)
@@ -237,7 +251,12 @@ class IKO_Device(object):
 
             # else:
                 #the created motion starts only after the first point is specified. 
-                sp.MultiPoint(self.hc, 0, self.axis, 1,True)
+                #inputs:
+                # - handle
+                # - flag: 0- default velocity; 1- use velocity specified for each segment
+                # - axis
+                # - dwell_time: time to wait at each point
+                sp.MultiPoint(self.hc, 0, self.axis, dwell_time, wait = sp.SYNCHRONOUS, failure_check=True)
                 for i in range(step_num):
                     sp.AddPoint(self.hc, self.axis, start_pos+i*step)
                 sp.EndSequence(self.hc, self.axis)
@@ -291,6 +310,15 @@ class IKO_Device(object):
                 # If False the function will ignore detected errors.
                 print('Connection closed')
 
+        def interrupt(self):
+              #Halt function terminates a motion using the full deceleration profile. 
+              #Kill function terminates a motion using reduced deceleration profile.
+              #WHICH IS BEST when we interrupt the measurement?
+                sp.Halt(self.hc, self.axis, sp.SYNCHRONOUS, True)
+
+                # sp.Kill(self.hc, self.axis, sp.SYNCHRONOUS, True)
+
+
 
 
 if __name__=="__main__": 
@@ -300,41 +328,38 @@ if __name__=="__main__":
         # Values for ip and port of the controller
         ip="10.0.0.100"
         port= 701
-        motor=IKO_Device(ip, port)
+        axis = 0
+        motor=IKO_Device(ip, port, axis)
 
         print('Serial number:',motor.get_serial())
         #Settings
         print('Velocity:',motor.get_velocity())
         print('Acceleration:',motor.get_acceleration())
 
-        #Absolute motion
+
         motor.activate() #motor activation is fundamental
         print('Motor activated')
         print('Initial feedback position:',motor.get_fposition())
-        print('Initial reference position:',motor.get_rposition())
-        # motor.move_absolute(2.0)
-        # motor.wait_on_target() #wait until the motion is completed
-        print('Final feedback position:',motor.get_fposition())
-        print('Final reference position:',motor.get_rposition())
-        motor.deactivate()
-        print('Motor deactivated')
+
+
+        #Absolute motion
+        motor.move_absolute(4)
 
         # #Sequence of absolute motions
-        # motor.activate()
-        # motor.move_sequence(0.1, 10, current_position)
-        # motor.deactivate()
-        # print('Sequence finished at:',motor.get_fposition())
+        # motor.move_sequence(0.1, 10, motor.get_fposition(), dwell_time=0.1)
 
 
         # #Relative motion
-        # motor.activate()
-        # print('Motor activated')
-        # print('Initial position:',motor.get_fposition())
-        # motor.move_relative(5)
-        # print('Final position:',motor.get_fposition())
-        # #motor.deactivate()
+        # motor.move_relative(-2)
 
-        #motor.stop()
+
+        # motor.wait_on_target() #wait until the motion is completed
+        
+        print('Final position:',motor.get_fposition())
+
+
+        motor.deactivate()
+        motor.stop()
     finally:
         motor.close()
 

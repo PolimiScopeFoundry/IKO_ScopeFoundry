@@ -1,0 +1,23 @@
+2025-12-03T17:09:52|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 113, in enable_connection
+    raise err
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 101, in enable_connection
+    self.connect()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_Hardware.py", line 68, in connect
+    self.read_from_hardware()
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\hardware.py", line 145, in read_from_hardware
+    lq.read_from_hardware()
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\logged_quantity\logged_quantity.py", line 191, in read_from_hardware
+    val = self.hardware_read_func()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 171, in get_fposition
+    return sp.GetFPosition(self.hc, self.axis, sp.SYNCHRONOUS, True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\AppData\Roaming\Python\Python312\site-packages\SPiiPlusPython\SPiiPlusWarper.py", line 469, in GetFPosition
+    return spb.GetFPosition(handle, axis, wait, failure_check)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 1741, in SPiiPlusPython.SPiiPlusBinary.GetFPosition
+TypeError: 'str' object cannot be interpreted as an integer
+
+2025-12-03T17:10:37|INFO|IKO_app|on_close
+2025-12-03T17:10:37|INFO|IKO_app|disconnecting IKO_HW
