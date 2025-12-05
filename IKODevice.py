@@ -224,17 +224,19 @@ class IKO_Device(object):
 
 
         def move_absolute(self, desired_pos): #move to a given position
-                # rangemin = self.
-                # rangemax = self.
-                # pos = min(rangemax, max(desired_pos, rangemin))
-                # if desired_pos < rangemin:
-                #     warnings.warn(f"Displacement {pos} smaller than {rangemin}", UserWarning)
-                # elif desired_pos > rangemax:
-                #     warnings.warn(f"Displacement {pos} bigger than {rangemax}", UserWarning)
+                rangemin = 0 #mm
+                rangemax = 25 #mm
+                pos = min(rangemax, max(desired_pos, rangemin)) #limit control
+
             # if hasattr(self, 'hc_sim'):
             #     sp.ToPoint(self.hc_sim, 0,self.axis, desired_pos, sp.SYNCHRONOUS, True)
             # else:
-                sp.ToPoint(self.hc,flags= 0, axis = self.axis, point = desired_pos, wait = sp.SYNCHRONOUS ,failure_check=True)
+                if desired_pos < rangemin:
+                    warnings.warn(f"Final position {desired_pos} smaller than {rangemin}", UserWarning)
+                elif desired_pos > rangemax:
+                    warnings.warn(f"Final position {desired_pos} bigger than {rangemax}", UserWarning)
+                else:
+                    sp.ToPoint(self.hc,flags= 0, axis = self.axis, point = desired_pos, wait = sp.SYNCHRONOUS ,failure_check=True)
                 #Arguments: handle, flag, axis, position,wait, failure_check
                 #flag: 0- start up immediately the motion; 1-  plan the motion but don’t start it until the
                 # function Go is executed
@@ -246,20 +248,21 @@ class IKO_Device(object):
 
         def move_relative(self, desired_step):
                 disp = desired_step * 0.001 #um to mm
-                # rangemin = self.
-                # rangemax = self.
-                # pos = self.home + self.get_fposition() + disp
-                # if pos < rangemin:
-                #     warnings.warn(f"Displacement {pos} smaller than {rangemin}", UserWarning)
-                #     disp = 0
-                # elif pos > rangemax:
-                #     warnings.warn(f"Displacement {pos} bigger than {rangemax}", UserWarning)
+                rangemin = 0 #mm
+                rangemax = 25 #mm
+                pos = self.get_fposition() + disp
+
                 # disp = 0
                 # if hasattr(self, 'hc_sim'):
                 #     sp.ToPoint(self.hc_sim, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, desired_step, sp.SYNCHRONOUS, True)
                 # else:
-                sp.ToPoint(self.hc, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, disp, sp.SYNCHRONOUS, True)
-                self.wait_on_target() #wait until the motion is completed
+                if pos < rangemin:
+                    warnings.warn(f"Final position {pos} smaller than {rangemin}", UserWarning)
+                elif pos > rangemax:
+                    warnings.warn(f"Final position {pos} bigger than {rangemax}", UserWarning)
+                else:
+                    sp.ToPoint(self.hc, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, disp, sp.SYNCHRONOUS, True)
+                    self.wait_on_target() #wait until the motion is completed
  
 
 
