@@ -86,6 +86,7 @@ class IKO_HW(HardwareComponent):
         self.motor.stop()
         
     def go_home(self):
+        #self.motor.set_rposition()
         pass
 
     def move_relative(self):
