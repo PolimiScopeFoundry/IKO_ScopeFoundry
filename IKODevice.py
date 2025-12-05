@@ -4,6 +4,7 @@ Created on fri Mon 24 1:34:36 2025
 
 @authors: Martina Riva. Politecnico di Milano
 """
+import warnings
 import SPiiPlusPython as sp
 import time
 import numpy as np
@@ -43,6 +44,9 @@ class IKO_Device(object):
                 print(connection_list)
 
             self.axis = axis
+            self.activate() #motor activation is fundamental
+            print('Debugging: Motor activated')
+
 
     
         def get_info(self): #connection info
@@ -63,10 +67,10 @@ class IKO_Device(object):
             return SN 
         
         def getError(self):
-            error_code = sp.GetLastError()
-            print('Debugging: Error code:', error_code)
-            error_str = sp.GetErrorString(self.hc, error_code, 255, failure_check=True)
-            print('Error string:',error_str)
+                error_code = sp.GetLastError()
+                print('Debugging: Error code:', error_code)
+                error_str = sp.GetErrorString(self.hc, error_code, 255, failure_check=True)
+                print('Error string:',error_str)
       
         def activate(self): #activate the motor
             # if hasattr(self, 'hc_sim'):
@@ -220,6 +224,13 @@ class IKO_Device(object):
 
 
         def move_absolute(self, desired_pos): #move to a given position
+                # rangemin = self.
+                # rangemax = self.
+                # pos = min(rangemax, max(desired_pos, rangemin))
+                # if desired_pos < rangemin:
+                #     warnings.warn(f"Displacement {pos} smaller than {rangemin}", UserWarning)
+                # elif desired_pos > rangemax:
+                #     warnings.warn(f"Displacement {pos} bigger than {rangemax}", UserWarning)
             # if hasattr(self, 'hc_sim'):
             #     sp.ToPoint(self.hc_sim, 0,self.axis, desired_pos, sp.SYNCHRONOUS, True)
             # else:
@@ -230,13 +241,25 @@ class IKO_Device(object):
                 #axis: 0 for axis 1, 1 for axis 2, etc.
         #NOTE: ExtToPoint is available for motion to specified point using the specified velocity or end
         # velocity. MAY IT BE USEFUL?
+                self.wait_on_target() #wait until the motion is completed
 
 
         def move_relative(self, desired_step):
-            # if hasattr(self, 'hc_sim'):
-            #     sp.ToPoint(self.hc_sim, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, desired_step, sp.SYNCHRONOUS, True)
-            # else:
-                sp.ToPoint(self.hc, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, desired_step, sp.SYNCHRONOUS, True)
+                disp = desired_step * 0.001 #um to mm
+                # rangemin = self.
+                # rangemax = self.
+                # pos = self.home + self.get_fposition() + disp
+                # if pos < rangemin:
+                #     warnings.warn(f"Displacement {pos} smaller than {rangemin}", UserWarning)
+                #     disp = 0
+                # elif pos > rangemax:
+                #     warnings.warn(f"Displacement {pos} bigger than {rangemax}", UserWarning)
+                # disp = 0
+                # if hasattr(self, 'hc_sim'):
+                #     sp.ToPoint(self.hc_sim, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, desired_step, sp.SYNCHRONOUS, True)
+                # else:
+                sp.ToPoint(self.hc, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, disp, sp.SYNCHRONOUS, True)
+                self.wait_on_target() #wait until the motion is completed
  
 
 
@@ -324,44 +347,48 @@ class IKO_Device(object):
 if __name__=="__main__": 
     
     
+
+    # Values for ip and port of the controller
+    ip="10.0.0.100"
+    port= 701
+    axis = 0
+    motor=IKO_Device(ip, port, axis)
+
+    print('Serial number:',motor.get_serial())
+    #Settings
+    print('Velocity:',motor.get_velocity())
+    print('Acceleration:',motor.get_acceleration())
+
+
+    motor.activate() #motor activation is fundamental
+    print('Motor activated')
+    print('Initial feedback position:',motor.get_fposition())
     try:
-        # Values for ip and port of the controller
-        ip="10.0.0.100"
-        port= 701
-        axis = 0
-        motor=IKO_Device(ip, port, axis)
 
-        print('Serial number:',motor.get_serial())
-        #Settings
-        print('Velocity:',motor.get_velocity())
-        print('Acceleration:',motor.get_acceleration())
+    #Absolute motion
+        motor.move_absolute(7)
+
+    # #Sequence of absolute motions
+    # motor.move_sequence(0.1, 10, motor.get_fposition(), dwell_time=0.1)
 
 
-        motor.activate() #motor activation is fundamental
-        print('Motor activated')
-        print('Initial feedback position:',motor.get_fposition())
+    # #Relative motion
+    # motor.move_relative(1)
 
 
-        #Absolute motion
-        motor.move_absolute(4)
-
-        # #Sequence of absolute motions
-        # motor.move_sequence(0.1, 10, motor.get_fposition(), dwell_time=0.1)
-
-
-        # #Relative motion
-        # motor.move_relative(-2)
-
-
-        # motor.wait_on_target() #wait until the motion is completed
-        
+        motor.wait_on_target() #wait until the motion is completed
+    
         print('Final position:',motor.get_fposition())
+    except Exception as e:
+        motor.getError()
 
 
-        motor.deactivate()
-        motor.stop()
-    finally:
-        motor.close()
+
+
+    motor.deactivate()
+    motor.stop()
+
+    motor.close()
 
 
 #REFERENCES:
