@@ -170,6 +170,40 @@ class IKO_Device(object):
         #SetVelocityImm, SetAccelerationImm, SetDecelerationImm, SetJerkImm
         #DO WE NEED THEM?
 
+        def trigger(self, step, start_pos, stop_pos, width):
+
+            #Configuring specific PEG engine
+            #handle: communication handle
+            #flag: Bit-mapped argument
+            #axis
+            #eng2enc_bitcode: Bit code for engines-to-encoders mapping
+            #gpouts_bitcode: General Purpose outputs assignment to use as PEG state and PEG pulse outputs
+            #failure check
+
+            sp.AssignPegNTV2(self.hc, sp.MotionFlags.ACSC_AMF_FASTLOADINGPEG, self.axis, eng2enc_bitcode = 5,
+                             gpouts_bitcode = 0, failure_check=True)
+
+            #Assinging physical output pins
+            #outout_idx: 0 for OUT_0, 1 for OUT_1, ..., 9 for OUT_9.
+            #output_bitcode: Bit code for engine outputs to physical outputs mapping
+            sp.AssignPegOutputsNT(self.hc, self.axis, output_idx = 2, output_bitcode = 1,failure_check=True)
+
+            #Seting parameters for incremental PEG mode (trigger at specified positions): 
+            #start_pos: position of the first trigger
+            #step: distance between two consecutive triggers
+            #stop_pos: position of the last trigger
+            #width: pulse width in ms
+            #timeout: time to wait for the PEG configuration to be completed (ms)
+            sp.PegIncNTV2(self.hc, 0, self.axis, width, start_pos, step, stop_pos, -1, -1, failure_check=True)
+            sp.WaitPegReadyNT(self.hc, self.axis, timeout = 1000, failure_check=True)
+
+            #Starting PEG
+            sp.startPegNT(self.hc, self.axis, sp.SYNCHRONOUS, failure_check=True)
+
+            #Alternatively, there is the random PEG mode (trigger at random positions): sp.PegRandomNT
+
+            #NOTE: this function only configures the trigger, it does not start it????
+
 
 
         def get_fposition(self):#feedback position: a measured position of the motor transferred to user units.
