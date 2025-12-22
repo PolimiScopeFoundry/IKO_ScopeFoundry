@@ -80,21 +80,21 @@ class IKO_HW(HardwareComponent):
             setting.hardware_set_func = None
             
     def set_home(self):
-        self.motor.set_rposition()
+        self.motor.set_home()
     
     def stop(self):
         self.motor.stop()
         
     def go_home(self):
-        #self.motor.set_rposition()
-        pass
+        self.motor.go_home()
+        self.read_from_hardware()
 
     def move_relative(self):
         self.motor.move_relative(self.step.value)
         self.position.read_from_hardware()
         
     def gotoRefSwitch(self):
-        pass
+        self.motor.gotoRefSwitch()
         
         
         

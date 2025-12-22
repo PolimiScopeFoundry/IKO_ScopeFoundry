@@ -44,7 +44,10 @@ class IKO_Device(object):
                 print(connection_list)
 
             self.axis = axis
+            self.axisLimit_min = -0.25 #mm
+            self.axisLimit_max = 25.25 #mm
             self.activate() #motor activation is fundamental
+            self.home = 0.0
             print('Debugging: Motor activated')
 
 
@@ -176,7 +179,9 @@ class IKO_Device(object):
             # if hasattr(self, 'hc_sim'):
             #     return sp.GetFPosition(self.hc_sim, self.axis, sp.SYNCHRONOUS, True)
             # else:
-                return sp.GetFPosition(self.hc, self.axis, sp.SYNCHRONOUS, True)
+                print('Debugging: Absolute position:', sp.GetFPosition(self.hc, self.axis, sp.SYNCHRONOUS, True))
+                print('Debugging: Relative position to home:', sp.GetFPosition(self.hc, self.axis, sp.SYNCHRONOUS, True) - self.home)
+                return sp.GetFPosition(self.hc, self.axis, sp.SYNCHRONOUS, True) - self.home
         
             
         # def set_fposition(self, desired_pos): #motor does not move FPOS
@@ -184,7 +189,6 @@ class IKO_Device(object):
         #     #     sp.SetFPosition(self.hc_sim, self.axis, desired_pos, sp.SYNCHRONOUS, True) 
         #     # else:
         #         sp.SetFPosition(self.hc, self.axis, desired_pos, sp.SYNCHRONOUS, True)
-        #IY MAY BE USELESS because the absolute motion is controlled by sp.ToPoint function
 
 
 
@@ -224,19 +228,21 @@ class IKO_Device(object):
 
 
         def move_absolute(self, desired_pos): #move to a given position
-                rangemin = 0 #mm
-                rangemax = 25 #mm
-                pos = min(rangemax, max(desired_pos, rangemin)) #limit control
+                rangemin = self.axisLimit_min  #mm
+                rangemax = self.axisLimit_max  #mm
+                rel_pos = desired_pos + self.home
+                print('Debugging: Moving to absolute position:', rel_pos)
+                pos = min(rangemax, max(rel_pos, rangemin)) #limit control
 
             # if hasattr(self, 'hc_sim'):
             #     sp.ToPoint(self.hc_sim, 0,self.axis, desired_pos, sp.SYNCHRONOUS, True)
             # else:
-                if desired_pos < rangemin:
+                if rel_pos < rangemin:
                     warnings.warn(f"Final position {desired_pos} smaller than {rangemin}", UserWarning)
-                elif desired_pos > rangemax:
+                elif rel_pos > rangemax:
                     warnings.warn(f"Final position {desired_pos} bigger than {rangemax}", UserWarning)
                 else:
-                    sp.ToPoint(self.hc,flags= 0, axis = self.axis, point = desired_pos, wait = sp.SYNCHRONOUS ,failure_check=True)
+                    sp.ToPoint(self.hc,flags= 0, axis = self.axis, point = rel_pos, wait = sp.SYNCHRONOUS ,failure_check=True)
                 #Arguments: handle, flag, axis, position,wait, failure_check
                 #flag: 0- start up immediately the motion; 1-  plan the motion but don’t start it until the
                 # function Go is executed
@@ -248,9 +254,9 @@ class IKO_Device(object):
 
         def move_relative(self, desired_step):
                 disp = desired_step * 0.001 #um to mm
-                rangemin = 0 #mm
-                rangemax = 25 #mm
-                pos = self.get_fposition() + disp
+                rangemin = self.axisLimit_min  #mm
+                rangemax = self.axisLimit_max  #mm
+                pos = self.get_fposition() + self.home + disp
 
                 # disp = 0
                 # if hasattr(self, 'hc_sim'):
@@ -288,15 +294,18 @@ class IKO_Device(object):
                 sp.EndSequence(self.hc, self.axis)
         #NOTE: this may be a built-in function to perform the scan rather than a for loop.
 
-        # def set_home(self):
-            
-        # def get_home(self):    
-
+        def set_home(self):
+            self.home = self.get_fposition()
+           
         
-        # def go_home(self):
+        def go_home(self):
+            self.move_absolute(self.home)
+            print('Debugging: Returned to home position:', self.home)
+            print('Debugging: Current position after going home:', self.get_fposition())
 
             
-        # def gotoRefSwitch(self):
+        def gotoRefSwitch(self):
+            sp.ToPoint(self.hc,flags= 0, axis = self.axis, point = self.axisLimit_min, wait = sp.SYNCHRONOUS ,failure_check=True)     
             
 
         def wait_on_target(self): 
