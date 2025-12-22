@@ -1,0 +1,23 @@
+2025-12-05T14:32:15|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 366, in <module>
+    motor.move_absolute(7)
+    ^^^^^
+NameError: name 'motor' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_app.py", line 27, in <module>
+    app = IKO_app(sys.argv)
+          ^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\base_app\base_microscope_app.py", line 88, in __init__
+    self.setup()
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_app.py", line 19, in setup
+    from IKO_Hardware import IKO_HW
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKO_Hardware.py", line 8, in <module>
+    from IKODevice import IKO_Device
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 380, in <module>
+    motor.getError()
+    ^^^^^
+NameError: name 'motor' is not defined
+
