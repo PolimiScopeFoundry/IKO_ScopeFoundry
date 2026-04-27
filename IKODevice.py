@@ -76,7 +76,7 @@ class IKO_Device(object):
             # if hasattr(self, 'hc_sim'):
             #     sp.Enable(self.hc_sim,0,sp.SYNCHRONOUS,True)
             # else:
-                sp.Enable(self.hc,0,sp.SYNCHRONOUS,True)
+                sp.Enable(self.hc, self.axis, sp.SYNCHRONOUS,True)
                 print('Debugging: Motor enabled')
                 # sp.CommutExt(self.hc, 0, sp.ACSC_NONE,sp.ACSC_NONE, sp.ACSC_NONE, sp.SYNCHRONOUS, True)
                 
@@ -96,7 +96,7 @@ class IKO_Device(object):
 
 
         def Break(self): #terminates motion immediately only if there is a motion planned in the same motion queue
-            sp.Break(self.hc, 0, sp.SYNCHRONOUS, True)
+            sp.Break(self.hc, self.axis, sp.SYNCHRONOUS, True)
 
 
         def get_error(self):
@@ -172,6 +172,9 @@ class IKO_Device(object):
 
         def trigger(self, step, start_pos, stop_pos, width):
 
+            #Disabling motor before configuring PEG
+            sp.Disable(self.hc, self.axis, sp.SYNCHRONOUS, True) #function deactivate
+
             #Configuring specific PEG engine
             #handle: communication handle
             #flag: Bit-mapped argument
@@ -187,6 +190,9 @@ class IKO_Device(object):
             #outout_idx: 0 for OUT_0, 1 for OUT_1, ..., 9 for OUT_9.
             #output_bitcode: Bit code for engine outputs to physical outputs mapping
             sp.AssignPegOutputsNT(self.hc, self.axis, output_idx = 2, output_bitcode = 1,failure_check=True)
+
+            #Enabling motor 
+            sp.Enable(self.hc,0,sp.SYNCHRONOUS,True)
 
             #Seting parameters for incremental PEG mode (trigger at specified positions): 
             #start_pos: position of the first trigger
