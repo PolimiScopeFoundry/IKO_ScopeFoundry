@@ -1,0 +1,56 @@
+2025-12-05T14:41:23|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\logged_quantity\logged_quantity.py", line 278, in update_value
+    self.hardware_set_func(self.val)
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 244, in move_absolute
+    self.wait_on_target() #wait until the motion is completed
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 303, in wait_on_target
+    sp.WaitMotionEnd(self.hc, self.axis, 500, True) # timeout in ms
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\AppData\Roaming\Python\Python312\site-packages\SPiiPlusPython\SPiiPlusWarper.py", line 1192, in WaitMotionEnd
+    return spb.WaitMotionEnd(handle, axis, timeout, failure_check)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 4072, in SPiiPlusPython.SPiiPlusBinary.WaitMotionEnd
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 76, in SPiiPlusPython.SPiiPlusBinary.error_check
+Exception: ACS Command error: 
+Received error code: 130
+Message Error: Timeout expired
+
+2025-12-05T14:41:51|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\logged_quantity\logged_quantity.py", line 278, in update_value
+    self.hardware_set_func(self.val)
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 244, in move_absolute
+    self.wait_on_target() #wait until the motion is completed
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 303, in wait_on_target
+    sp.WaitMotionEnd(self.hc, self.axis, 500, True) # timeout in ms
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\AppData\Roaming\Python\Python312\site-packages\SPiiPlusPython\SPiiPlusWarper.py", line 1192, in WaitMotionEnd
+    return spb.WaitMotionEnd(handle, axis, timeout, failure_check)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 4072, in SPiiPlusPython.SPiiPlusBinary.WaitMotionEnd
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 76, in SPiiPlusPython.SPiiPlusBinary.error_check
+Exception: ACS Command error: 
+Received error code: 130
+Message Error: Timeout expired
+
+2025-12-05T14:41:58|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\logged_quantity\logged_quantity.py", line 278, in update_value
+    self.hardware_set_func(self.val)
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 244, in move_absolute
+    self.wait_on_target() #wait until the motion is completed
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 303, in wait_on_target
+    sp.WaitMotionEnd(self.hc, self.axis, 500, True) # timeout in ms
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\hyper\AppData\Roaming\Python\Python312\site-packages\SPiiPlusPython\SPiiPlusWarper.py", line 1192, in WaitMotionEnd
+    return spb.WaitMotionEnd(handle, axis, timeout, failure_check)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 4072, in SPiiPlusPython.SPiiPlusBinary.WaitMotionEnd
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 76, in SPiiPlusPython.SPiiPlusBinary.error_check
+Exception: ACS Command error: 
+Received error code: 130
+Message Error: Timeout expired
+
+2025-12-05T14:42:06|INFO|IKO_app|on_close
+2025-12-05T14:42:06|INFO|IKO_app|disconnecting IKO_HW

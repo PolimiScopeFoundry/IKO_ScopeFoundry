@@ -1,0 +1,16 @@
+2025-12-05T14:09:09|CRITICAL|root|Unhandled exception: Traceback (most recent call last):
+  File "C:\Users\hyper\.conda\envs\IKOtwins\Lib\site-packages\ScopeFoundry\logged_quantity\logged_quantity.py", line 278, in update_value
+    self.hardware_set_func(self.val)
+  File "c:\Python Programs\ScopeFoundry Projects\IKO_ScopeFoundry\IKODevice.py", line 234, in move_absolute
+    sp.ToPoint(self.hc,flags= 0, axis = self.axis, point = desired_pos, wait = sp.SYNCHRONOUS ,failure_check=True)
+  File "C:\Users\hyper\AppData\Roaming\Python\Python312\site-packages\SPiiPlusPython\SPiiPlusWarper.py", line 592, in ToPoint
+    return spb.ToPoint(handle, flags, axis, point, wait, failure_check)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 2110, in SPiiPlusPython.SPiiPlusBinary.ToPoint
+  File "SPiiPlusPython\\SPiiPlusBinary.pyx", line 76, in SPiiPlusPython.SPiiPlusBinary.error_check
+Exception: ACS Command error: 
+Received error code: 3260
+Message Error: Motion cannot start because the motor is disabled
+
+2025-12-05T14:09:33|INFO|IKO_app|on_close
+2025-12-05T14:09:33|INFO|IKO_app|disconnecting IKO_HW
