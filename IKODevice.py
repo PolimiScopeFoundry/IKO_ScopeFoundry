@@ -173,45 +173,76 @@ class IKO_Device(object):
         #SetVelocityImm, SetAccelerationImm, SetDecelerationImm, SetJerkImm
         #DO WE NEED THEM?
 
-        def trigger(self, step, start_pos, stop_pos, width):
+        # def trigger(self, step, start_pos, stop_pos, width):
 
-            #Disabling motor before configuring PEG
-            sp.Disable(self.hc, self.axis, sp.SYNCHRONOUS, True) #function deactivate
+        #     #Disabling motor before configuring PEG
+        #     sp.Disable(self.hc, self.axis, sp.SYNCHRONOUS, True) #function deactivate
 
-            #Configuring specific PEG engine
-            #handle: communication handle
-            #flag: Bit-mapped argument
-            #axis
-            #eng2enc_bitcode: Bit code for engines-to-encoders mapping
-            #gpouts_bitcode: General Purpose outputs assignment to use as PEG state and PEG pulse outputs
-            #failure check
+        #     #Configuring specific PEG engine
+        #     #handle: communication handle
+        #     #flag: Bit-mapped argument
+        #     #axis
+        #     #eng2enc_bitcode: Bit code for engines-to-encoders mapping
+        #     #gpouts_bitcode: General Purpose outputs assignment to use as PEG state and PEG pulse outputs
+        #     #failure check
 
-            sp.AssignPegNTV2(self.hc, sp.MotionFlags.ACSC_AMF_FASTLOADINGPEG, self.axis, eng2enc_bitcode = 5,
-                             gpouts_bitcode = 0, failure_check=True)
+        #     sp.AssignPegNTV2(self.hc, sp.MotionFlags.ACSC_AMF_FASTLOADINGPEG, self.axis, eng2enc_bitcode = 5,
+        #                      gpouts_bitcode = 0, failure_check=True)
 
-            #Assinging physical output pins
-            #outout_idx: 0 for OUT_0, 1 for OUT_1, ..., 9 for OUT_9.
-            #output_bitcode: Bit code for engine outputs to physical outputs mapping
-            sp.AssignPegOutputsNT(self.hc, self.axis, output_idx = 2, output_bitcode = 1,failure_check=True)
+        #     #Assinging physical output pins
+        #     #outout_idx: 0 for OUT_0, 1 for OUT_1, ..., 9 for OUT_9.
+        #     #output_bitcode: Bit code for engine outputs to physical outputs mapping
+        #     sp.AssignPegOutputsNT(self.hc, self.axis, output_idx = 2, output_bitcode = 1,failure_check=True)
 
-            #Enabling motor 
-            sp.Enable(self.hc,0,sp.SYNCHRONOUS,True)
+        #     #Enabling motor 
+        #     sp.Enable(self.hc,0,sp.SYNCHRONOUS,True)
 
-            #Seting parameters for incremental PEG mode (trigger at specified positions): 
-            #start_pos: position of the first trigger
-            #step: distance between two consecutive triggers
-            #stop_pos: position of the last trigger
-            #width: pulse width in ms
-            #timeout: time to wait for the PEG configuration to be completed (ms)
-            sp.PegIncNTV2(self.hc, 0, self.axis, width, start_pos, step, stop_pos, -1, -1, failure_check=True)
-            sp.WaitPegReadyNT(self.hc, self.axis, timeout = 1000, failure_check=True)
+        #     #Seting parameters for incremental PEG mode (trigger at specified positions): 
+        #     #start_pos: position of the first trigger
+        #     #step: distance between two consecutive triggers
+        #     #stop_pos: position of the last trigger
+        #     #width: pulse width in ms
+        #     #timeout: time to wait for the PEG configuration to be completed (ms)
+        #     sp.PegIncNTV2(self.hc, 0, self.axis, width, start_pos, step, stop_pos, -1, -1, failure_check=True)
+        #     sp.WaitPegReadyNT(self.hc, self.axis, timeout = 1000, failure_check=True)
 
-            #Starting PEG
-            sp.startPegNT(self.hc, self.axis, sp.SYNCHRONOUS, failure_check=True)
+        #     #Starting PEG
+        #     sp.startPegNT(self.hc, self.axis, sp.SYNCHRONOUS, failure_check=True)
 
-            #Alternatively, there is the random PEG mode (trigger at random positions): sp.PegRandomNT
 
-            #NOTE: this function only configures the trigger, it does not start it????
+        def trigger(self, positions, width):
+        
+            #Define pulse width
+            sp.WriteReal(self.hc, 1, "Pulse_Width", sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE
+                            , sp.GeneralDefinition.ACSC_NONE, width, sp.SYNCHRONOUS, True)
+            
+            #Define fired positions
+            step_num = len(positions)
+            sp.WriteReal(self.hc, 1, "Fire_Position", 0, step_num-1, sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE, positions, sp.SYNCHRONOUS, True)
+            #If the variable is a one-dimensional array, from1, to1 must specify the index range and from2, to2 must be GeneralDefinition.ACSC_NONE
+            
+            #Enable trigger mode
+            sp.WriteInteger(self.hc, 1, "Pulse_Enable", sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE
+                            , sp.GeneralDefinition.ACSC_NONE, 1, sp.SYNCHRONOUS, True)
+            #If the variable is scalar, all indexes from1, to1, from2, to2 must be GeneralDefinition.ACSC_NONE.
+
+            #Define number of pulses to be generated
+            sp.WriteInteger(self.hc, 1, "Total_Pulses", sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE, sp.GeneralDefinition.ACSC_NONE
+                            , sp.GeneralDefinition.ACSC_NONE, step_num, sp.SYNCHRONOUS, True)
+            
+
+            #float,or np.array with dtype is np.double in accordance with the return object shape
+            print('Debugging: Desired fire positions:', positions)
+            print('Debugging: Fire positions:', sp.ReadReal(self.hc, 1, "Fire_Position",0,step_num-1,-1,-1, sp.SYNCHRONOUS, True) )
+            print('Debugging: Total pulses:', sp.ReadInteger(self.hc, 1, "Total_Pulses",-1,-1,-1,-1, sp.SYNCHRONOUS, True) )
+
+            #Run buffer 
+            sp.RunBuffer( self.hc, 1, None, failure_check=True )
+            print('Debugging: Running buffer')      
+
+        def trigger_off(self):
+            sp.StopBuffer(self.hc, 1, failure_check=True)
+            print('Debugging: Stopping buffer')
 
 
 
@@ -289,7 +320,7 @@ class IKO_Device(object):
                 #axis: 0 for axis 1, 1 for axis 2, etc.
         #NOTE: ExtToPoint is available for motion to specified point using the specified velocity or end
         # velocity. MAY IT BE USEFUL?
-                self.wait_on_target() #wait until the motion is completed
+
 
 
         def move_relative(self, desired_step):
@@ -308,7 +339,7 @@ class IKO_Device(object):
                     warnings.warn(f"Final position {pos} bigger than {rangemax}", UserWarning)
                 else:
                     sp.ToPoint(self.hc, sp.MotionFlags.ACSC_AMF_RELATIVE,self.axis, disp, sp.SYNCHRONOUS, True)
-                    self.wait_on_target() #wait until the motion is completed
+
  
 
 
@@ -352,12 +383,10 @@ class IKO_Device(object):
             # if hasattr(self, 'hc_sim'):
             #     sp.WaitMotionEnd(self.hc_sim, 0, sp.SYNCHRONOUS, True)
             # else:
-                sp.WaitMotionEnd(self.hc, self.axis, 500, True) # timeout in ms
+                sp.WaitMotionEnd(self.hc, self.axis, 5000, True) # timeout in ms
          
         # def correct_backslash(self, displacement):
         
-
-        # def trigger(self, trigger_step, trigger_stop):
     
         def deactivate(self): #disable motor
             # if hasattr(self, 'hc_sim'):
